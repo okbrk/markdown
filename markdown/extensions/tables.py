@@ -6,7 +6,7 @@
 # See https://Python-Markdown.github.io/extensions/tables
 # for documentation.
 
-# Original code Copyright 2009 [Waylan Limberg](https://github.com/waylan)
+# Original code Copyright 2009 [Waylan Limberg](http://achinghead.com)
 
 # All changes Copyright 2008-2014 The Python Markdown Project
 
@@ -237,14 +237,7 @@ class TableExtension(Extension):
         super().__init__(**kwargs)
 
     def extendMarkdown(self, md):
-        """ Register the processor.
-
-        | Class Instance                                                | Registry                                                         | Name   | Priority |
-        | ------------------------------------------------------------- | ---------------------------------------------------------------- | ------ | :------: |
-        | [`TableProcessor`][markdown.extensions.tables.TableProcessor] | [`blockprocessors`][markdown.blockprocessors.build_block_parser] | `table` | `75` |
-
-        """
-        # flake8: noqa: E501 242-244
+        """ Add an instance of `TableProcessor` to `BlockParser`. """
         if '|' not in md.ESCAPED_CHARS:
             md.ESCAPED_CHARS.append('|')
         processor = TableProcessor(md.parser, self.getConfigs())

@@ -6,7 +6,7 @@
 # See https://Python-Markdown.github.io/extensions/wikilinks
 # for documentation.
 
-# Original code Copyright [Waylan Limberg](https://github.com/waylan).
+# Original code Copyright [Waylan Limberg](http://achinghead.com/).
 
 # All changes Copyright The Python Markdown Project
 
@@ -48,14 +48,6 @@ class WikiLinkExtension(Extension):
         super().__init__(**kwargs)
 
     def extendMarkdown(self, md):
-        """ Register the processor.
-
-        | Class Instance                                                              | Registry                                                         | Name   | Priority |
-        | --------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------ | :------: |
-        | [`WikiLinksInlineProcessor`][markdown.extensions.wikilinks.WikiLinksInlineProcessor] | [`inlinepatterns`][markdown.inlinepatterns.build_inlinepatterns] | `wikilink` | `75` |
-
-        """
-        # flake8: noqa: E501 53-55
         self.md = md
 
         # append to end of inline patterns

@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import sys
 import optparse
+import codecs
 import warnings
 import markdown
 try:
@@ -49,14 +50,10 @@ def parse_options(args=None, values=None):
     usage = """%prog [options] [INPUTFILE]
        (STDIN is assumed if no INPUTFILE is given)"""
     desc = "A Python implementation of John Gruber's Markdown. " \
-           "https://python-markdown.github.io/"
+           "https://Python-Markdown.github.io/"
     ver = "%%prog %s" % markdown.__version__
-    epilog = "WARNING: The Python-Markdown library does NOT sanitize its HTML output. If " \
-             "you are processing Markdown input from an untrusted source, it is your " \
-             "responsibility to ensure that it is properly sanitized. For more " \
-             "information see <https://python-markdown.github.io/sanitization/>."
 
-    parser = optparse.OptionParser(usage=usage, description=desc, version=ver, epilog=epilog)
+    parser = optparse.OptionParser(usage=usage, description=desc, version=ver)
     parser.add_option("-f", "--file", dest="filename", default=None,
                       help="Write output to OUTPUT_FILE. Defaults to STDOUT.",
                       metavar="OUTPUT_FILE")
@@ -103,7 +100,7 @@ def parse_options(args=None, values=None):
 
     extension_configs = {}
     if options.configfile:
-        with open(
+        with codecs.open(
             options.configfile, mode="r", encoding=options.encoding
         ) as fp:
             try:

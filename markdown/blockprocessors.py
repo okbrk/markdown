@@ -494,7 +494,7 @@ class SetextHeaderProcessor(BlockProcessor):
     """ Process Setext-style Headers. """
 
     # Detect Setext-style header. Must be first 2 lines of block.
-    RE = re.compile(r'^.*?\n(?:=+|-+)[ ]*(\n|$)', re.MULTILINE)
+    RE = re.compile(r'^.*?\n[=-]+[ ]*(\n|$)', re.MULTILINE)
 
     def test(self, parent: etree.Element, block: str) -> bool:
         return bool(self.RE.match(block))
@@ -577,8 +577,7 @@ class EmptyBlockProcessor(BlockProcessor):
 class ReferenceProcessor(BlockProcessor):
     """ Process link references. """
     RE = re.compile(
-        r'^[ ]{0,3}\[([^\[\]]*)\]:[ ]*(?:\n[ ]*)?([^\s]+)[ ]*(?:\n[ ]*)?((["\'])(.*)\4[ ]*|\((.*)\)[ ]*)?$',
-        re.MULTILINE
+        r'^[ ]{0,3}\[([^\[\]]*)\]:[ ]*\n?[ ]*([^\s]+)[ ]*(?:\n[ ]*)?((["\'])(.*)\4[ ]*|\((.*)\)[ ]*)?$', re.MULTILINE
     )
 
     def test(self, parent: etree.Element, block: str) -> bool:

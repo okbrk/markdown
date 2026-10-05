@@ -1,6 +1,4 @@
----
 title: CodeHilite Extension
----
 
 # CodeHilite
 
@@ -12,22 +10,6 @@ Python-Markdown code blocks using [Pygments][].
 [Pygments]: http://pygments.org/
 
 This extension is included in the standard Markdown library.
-
-!!! info "Note"
-
-    This extension is in __maintenance mode__.  We will continue to fix bugs
-    and keep it up-to-date with the core parser, but no new features or
-    changes in behavior will be made. If you need a feature that this
-    extension does not offer, then you have three options (1) find an
-    existing [third-party extension] which meets your needs, (2) [build your
-    own extension], or (3) fork this extension (pursuant to its licensing
-    requirements) and maintain it as a third-party extension.
-
-    We recommend [Highlight] as an actively developed alternative. 
-
-[third-party extension]: index.md#third-party-extensions
-[build your own extension]: api.md
-[Highlight]: https://facelessuser.github.io/pymdown-extensions/extensions/highlight/
 
 ## Setup
 
@@ -86,13 +68,12 @@ block will not be highlighted.
 
 ## Syntax
 
-The CodeHilite extension follows the same [syntax][] as regular (indented)
-Markdown code blocks, with one exception. The highlighter needs to know what
-language to use for the code block. There are three ways to tell the
-highlighter what language the code block contains and each one has a
-different result.
+The CodeHilite extension follows the same [syntax][] as regular Markdown code
+blocks, with one exception. The highlighter needs to know what language to use for
+the code block. There are three ways to tell the highlighter what language the
+code block contains and each one has a different result.
 
-!!! tip
+!!! Note
     The format of the language identifier only effects the display of line numbers
     if `linenums` is set to `None` (the default). If set to `True` or `False`
     (see [Usage](#usage) below) the format of the identifier has no effect on the
@@ -106,13 +87,15 @@ different result.
 If the first line of the code block contains a shebang, the language is derived
 from that and line numbers are used.
 
-``` md-render
----
-extensions: [codehilite]
----
+```md
     #!/usr/bin/python
     # Code goes here ...
 ```
+
+Will result in:
+
+    #!/usr/bin/python
+    # Code goes here ...
 
 ### Shebang (no path)
 
@@ -120,13 +103,15 @@ If the first line contains a shebang, but the shebang line does not contain a
 path (a single `/` or even a space), then that line is removed from the code
 block before processing. Line numbers are used.
 
-``` md-render
----
-extensions: [codehilite]
----
+```md
     #!python
     # Code goes here ...
 ```
+
+Will result in:
+
+    #!python
+    # Code goes here ...
 
 ### Colons
 
@@ -134,29 +119,35 @@ If the first line begins with three or more colons, the text following the
 colons identifies the language. The first line is removed from the code block
 before processing and line numbers are not used.
 
-``` md-render
----
-extensions: [codehilite]
----
+```md
     :::python
     # Code goes here ...
 ```
+
+Will result in:
+
+    :::python
+    # Code goes here ...
 
 Certain lines can be selected for emphasis with the colon syntax. When
 using Pygments' default CSS styles, emphasized lines have a yellow background.
 This is useful to direct the reader's attention to specific lines.
 
-``` md-render
----
-extensions: [codehilite]
----
+```md
     :::python hl_lines="1 3"
     # This line is emphasized
     # This line isn't
     # This line is emphasized
 ```
 
-!!! tip
+Will result in:
+
+    :::python hl_lines="1 3"
+    # This line is emphasized
+    # This line isn't
+    # This line is emphasized
+
+!!! Note
     `hl_lines` is named for Pygments' option meaning "highlighted lines".
 
 ### When No Language is Defined
@@ -165,14 +156,22 @@ CodeHilite is completely backwards compatible so that if a code block is
 encountered that does not define a language, the block is simply wrapped in
 `<pre>` tags and output.
 
-``` md-render
----
-extensions: [codehilite]
----
+```md
     # Code goes here ...
 ```
 
-!!! tip
+Will result in:
+
+    # Code goes here ...
+
+Lets see the source for that:
+
+```html
+<div class="codehilite"><pre><code># Code goes here ...
+</code></pre></div>
+```
+
+!!! Note
     When no language is defined, the Pygments highlighting engine will try to guess
     the language (unless `guess_lang` is set to `False`). Upon failure, the same
     behavior will happen as described above.
@@ -182,7 +181,7 @@ extensions: [codehilite]
 See [Extensions](index.md) for general extension usage. Use `codehilite` as the
 name of the extension.
 
-See the [Library Reference](../library.md#extensions) for information about
+See the [Library Reference](../reference.md#extensions) for information about
 configuring extensions.
 
 The following options are provided to configure the output:
@@ -210,7 +209,7 @@ The following options are provided to configure the output:
 * **`pygments_style`**{ #pygments_style }:
     Pygments HTML Formatter Style (`ColorScheme`). Defaults to `default`.
 
-    !!! tip
+    !!! Note
         This is useful only when `noclasses` is set to `True`, otherwise the
         CSS styles must be provided by the end user.
 
@@ -262,8 +261,7 @@ markdown.markdown(some_text, extensions=['codehilite'])
 To keep the code block's language in the Pygments generated HTML output, one can provide a custom Pygments formatter
 that takes the `lang_str` option. For example,
 
-```py-render { output-lang='html' }
-import markdown
+```python
 from pygments.formatters import HtmlFormatter
 from markdown.extensions.codehilite import CodeHiliteExtension
 
@@ -286,10 +284,22 @@ some_text = '''\
     print('hellow world')
 '''
 
-output = markdown.markdown(
+markdown.markdown(
     some_text,
     extensions=[CodeHiliteExtension(pygments_formatter=CustomHtmlFormatter)],
 )
+```
+
+The formatter above will output the following HTML structure for a code block:
+
+```html
+<div class="codehilite">
+    <pre>
+        <code class="language-python">
+        ...
+        </code>
+    </pre>
+</div>
 ```
 
 [html formatter]: https://pygments.org/docs/formatters/#HtmlFormatter

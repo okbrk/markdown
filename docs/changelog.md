@@ -1,116 +1,19 @@
----
 title: Changelog
 toc_depth: 2
----
 
 # Python-Markdown Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to the
-[Python Version Specification](https://packaging.python.org/en/latest/specifications/version-specifiers/).
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 See the [Contributing Guide](contributing.md) for details.
 
 ## [Unreleased]
 
-* Update serializer to be non-recursive (#1644).
-* Improve ancestor handling in the inline `Treeprocessor` (#1646).
-* Fix issue where inline HTML attributes were rejected if they had `<` or `>` in the attribute (#1647).
-* Fix issue where an unterminated end tag (`</foo`) could cause all remaining content to be dropped (#1651).
-
-## [3.11.0] - 2026-09-25
-
-### Changed
-
-* Inline processors now resume searching after the previous match, improving
-  performance for repeated inline patterns (#1619).
-* Officially support Python 3.15 and drop support for Python 3.10
-* Walk backtick runs in `BacktickInlineProcessor` without a regex (#1620).
-* Switch static site generator for documentation from MkDocs to Zensical
-  (#1627, #1635, #1637, and #1638).
-
 ### Fixed
 
-* Ensure removing Abbreviations does not raise an error (#1634).
-* Fix an issue with excessive backtracking when matching inline code blocks (#1617).
-* `md_in_html` now honors tags added to `Markdown.block_level_elements` after
-  the extension is loaded (#1246).
-* Fix quadratic-time regex backtracking in `ReferenceProcessor` when a link
-  reference definition has no URL, e.g. a line consisting only of `[id]:`
-  followed by many trailing spaces (#798).
-* Document `attr_list` usage for `def_list` (#1123).
-
-## [3.10.3] - 2026-07-30
-
-### Fixed
-
-* Fix `SetextHeaderProcessor` regex to prevent mixed `=` and `-` chars in setext-style headers (#1606).
-* Add AI Policy to Contributing Guide.
-* Officially document all included extensions as being in maintenance mode.
-* Link the Extension API documentation to the API Reference (#1612).
-
-## [3.10.2] - 2026-02-09
-
-### Fixed
-
-* Fix a regression related to comment handling (#1590).
-* More reliable fix for `</` (#1593).
-
-## [3.10.1] - 2026-01-21
-
-### Fixed
-
-* Ensure nested elements inside inline comments are properly unescaped (#1571).
-* Make the docs build successfully with mkdocstrings-python 2.0 (#1575).
-* Fix infinite loop when multiple bogus or unclosed HTML comments appear in input (#1578).
-* Fix another infinite loop when handling bad comments (#1586).
-
-## [3.10.0] - 2025-11-03
-
-### Changed
-
-* Officially support Python 3.14 and PyPy 3.11 and drop support for Python 3.9
-  and PyPy 3.9.
-
-### Fixed
-
-* Fix an HTML comment parsing case in some Python versions that can cause an
-  infinite loop (#1554).
-* Revert the default behavior of `USE_DEFINITION_ORDER` (to `True`). The new
-  behavior introduced in 3.9.0 is experimental and results are inconsistent.
-  It should not have been made the default behavior (#1561).
-
-## [3.9.0] - 2025-09-04
-
-### Changed
-
-* Footnotes are now ordered by the occurrence of their references in the
-  document. A new configuration option for the footnotes extension,
-  `USE_DEFINITION_ORDER`, has been added to support restoring the previous
-  behavior of ordering footnotes by the occurrence of definitions (#1367).
-
-### Fixed
-
-* Ensure inline processing iterates through elements in document order (#1546).
-* Fix handling of incomplete HTML tags in code spans in Python 3.14 (#1547).
-
-## [3.8.2] - 2025-06-19
-
-### Fixed
-
-* Fix `codecs` deprecation in Python 3.14 (#1537).
-* Fix issue with unclosed comment parsing in Python 3.14 (#1537).
-* Fix issue with unclosed declarations in Python 3.14 (#1537).
-* Fix issue with unclosed HTML tag `<foo` and Python 3.14 (#1537).
-
-## [3.8.1] - 2025-06-18
-
-### Fixed
-
-* Ensure incomplete markup declaration in raw HTML doesn't crash parser (#1534).
 * Fixed dropped content in `md_in_html` (#1526).
-* Fixed HTML handling corner case that prevented some content from not being rendered (#1528).
 
 ## [3.8.0] - 2025-04-09
 
@@ -812,15 +715,15 @@ See the [Contributing Guide](contributing.md) for details.
     for each specific extension to find the assigned name.
 
     If an extension does not define an entry point, then the full path to the
-    extension must be used. See the [documentation](library.md#extensions) for
+    extension must be used. See the [documentation](reference.md#extensions) for
     a full explanation of the current behavior.
 
 * Extension configuration as part of extension name deprecated
 
     The previously documented method of appending the extension configuration
     options as a string to the extension name is deprecated and will raise an error.
-    The [`extension_configs`](library.md#extension_configs) keyword should be
-    used instead. See the [documentation](library.md#extension_configs) for a
+    The [`extension_configs`](reference.md#extension_configs) keyword should be
+    used instead. See the [documentation](reference.md#extension_configs) for a
     full explanation of the current behavior.
 
 * HeaderId extension deprecated

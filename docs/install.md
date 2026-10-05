@@ -1,6 +1,4 @@
----
 title: Installation
----
 
 # Installing Python-Markdown
 
@@ -9,11 +7,11 @@ title: Installation
 The easiest way to install Python-Markdown is simply to type the
 following command from the command line:
 
-```shell
+```bash
 pip install markdown
 ```
 
-That's it! You're ready to [use](library.md) Python-Markdown. Enjoy!
+That's it! You're ready to [use](reference.md) Python-Markdown. Enjoy!
 
 For more detailed instructions on installing Python packages, see the
 [Installing Packages] tutorial in the [Python Packaging User Guide].
@@ -29,6 +27,6 @@ Python-Markdown is maintained in a Git repository on GitHub.com. To
 get a copy of Python-Markdown from the repository do the following from the
 command line:
 
-```shell
+```bash
 pip install git+https://github.com/Python-Markdown/markdown.git
 ```

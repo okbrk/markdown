@@ -6,7 +6,7 @@
 # See https://Python-Markdown.github.io/extensions/fenced_code_blocks
 # for documentation.
 
-# Original code Copyright 2007-2008 [Waylan Limberg](https://github.com/waylan).
+# Original code Copyright 2007-2008 [Waylan Limberg](http://achinghead.com/).
 
 # All changes Copyright 2008-2014 The Python Markdown Project
 
@@ -44,15 +44,7 @@ class FencedCodeExtension(Extension):
         super().__init__(**kwargs)
 
     def extendMarkdown(self, md):
-        """
-        Register the processor.
-
-        | Class Instance                                                              | Registry                                                         | Name   | Priority |
-        | --------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------ | :------: |
-        | [`FencedBlockPreprocessor`][markdown.extensions.fenced_code.FencedBlockPreprocessor] | [`blockprocessors`][markdown.blockprocessors.build_block_parser] | `fenced_code_block` | `25` |
-
-        """
-        # flake8: noqa: E501 50-52
+        """ Add `FencedBlockPreprocessor` to the Markdown instance. """
         md.registerExtension(self)
 
         md.preprocessors.register(FencedBlockPreprocessor(md, self.getConfigs()), 'fenced_code_block', 25)

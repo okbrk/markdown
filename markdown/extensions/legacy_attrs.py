@@ -63,14 +63,7 @@ class LegacyAttrs(Treeprocessor):
 
 class LegacyAttrExtension(Extension):
     def extendMarkdown(self, md):
-        """ Register the processor.
-
-        | Class Instance                                                | Registry                                                         | Name   | Priority |
-        | ------------------------------------------------------------- | ---------------------------------------------------------------- | ------ | :------: |
-        | [`LegacyAttrs`][markdown.extensions.legacy_attrs.LegacyAttrs] | [`treeprocessors`][markdown.treeprocessors.build_treeprocessors] | `legacyattrs` | `15` |
-
-        """
-        # flake8: noqa: E501 68-70
+        """ Add `LegacyAttrs` to Markdown instance. """
         md.treeprocessors.register(LegacyAttrs(md), 'legacyattrs', 15)
 
 

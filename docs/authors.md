@@ -1,6 +1,4 @@
----
 title: Authors
----
 
 Primary Authors
 ===============

@@ -1,6 +1,4 @@
----
 title: Attribute Lists Extension
----
 
 # Attribute Lists
 
@@ -10,19 +8,6 @@ The Attribute Lists extension adds a syntax to define attributes on the various
 HTML elements in markdown's output.
 
 This extension is included in the standard Markdown library.
-
-!!! info "Note"
-
-    This extension is in __maintenance mode__.  We will continue to fix bugs
-    and keep it up-to-date with the core parser, but no new features or
-    changes in behavior will be made. If you need a feature that this
-    extension does not offer, then you have three options (1) find an
-    existing [third-party extension] which meets your needs, (2) [build your
-    own extension], or (3) fork this extension (pursuant to its licensing
-    requirements) and maintain it as a third-party extension.
-
-[third-party extension]: index.md#third-party-extensions
-[build your own extension]: api.md
 
 ## Syntax
 
@@ -34,8 +19,8 @@ The basic syntax was inspired by Maruku's Attribute Lists feature (see [web arch
 
 An example attribute list might look like this:
 
-``` markdown
-{ #someid .someclass somekey='some value' }
+```text
+{: #someid .someclass somekey='some value' }
 ```
 
 A word which starts with a hash (`#`) will set the id of an element.
@@ -48,34 +33,34 @@ A key/value pair (`somekey='some value'`) will assign that pair to the element.
 Be aware that while the dot syntax will add to a class, using key/value pairs
 will always override the previously defined attribute. Consider the following:
 
-``` markdown
-{ #id1 .class1 id=id2 class="class2 class3" .class4 }
+```text
+{: #id1 .class1 id=id2 class="class2 class3" .class4 }
 ```
 
 The above example would result in the following attributes being defined:
 
-``` markdown
+```text
 id="id2" class="class2 class3 class4"
 ```
 
 HTML includes support for some attributes to be a single term, like `checked`, for example. Therefore, the attribute
-list `{: checked }` would result in `checked` if the [output format](../library.md#output_format) is `html` or
+list `{: checked }` would result in `checked` if the [output format](../reference.md#output_format) is `html` or
 `checked="checked"` if the output format is `xhtml`.
 
 Curly braces can be backslash escaped to avoid being identified as an attribute list.
 
-``` markdown
+```text
 \{ not an attribute list }
 ```
 
 Opening and closing curly braces which are empty or only contain whitespace are ignored whether they are escaped or
 not. Additionally, any attribute lists which are not located in the specific locations documented below are ignored.
 
-A colon after the opening brace is optional, but is supported to maintain consistency with other implementations.
+The colon after the opening brace is optional, but is supported to maintain consistency with other implementations.
 Therefore, the following is also a valid attribute list:
 
-``` markdown
-{: #someid .someclass somekey='some value' }
+```text
+{ #someid .someclass somekey='some value' }
 ```
 
 In addition, the spaces after the opening brace and before the closing brace are optional. They are recommended as
@@ -91,45 +76,34 @@ characters are reduced to a single underscore.
 To define attributes for a block level element, the attribute list should
 be defined on the last line of the block by itself.
 
-``` md-render
----
-extensions: [attr_list]
----
+```text
 This is a paragraph.
-{ #an_id .a_class }
+{: #an_id .a_class }
+```
+
+The above results in the following output:
+
+```html
+<p id="an_id" class="a_class">This is a paragraph.</p>
 ```
 
 An exception is headers, as they are only ever allowed on one line.
 
-``` md-render
----
-extensions: [attr_list]
----
-A setext style header { #setext}
+```text
+A setext style header {: #setext}
 =================================
 
-### A hash style header ### { #hash }
+### A hash style header ### {: #hash }
 ```
 
-Similarly, when using with the [Definition List] Extension, an attribute list
-must be on the same line as the term.
+The above results in the following output:
 
-``` md-render
----
-extensions: [attr_list, def_list]
----
-Apple { #apple }
-:   Pomaceous fruit of plants of the genus Malus in
-    the family Rosaceae.
-
-Orange { #orange }
-:   The fruit of an evergreen tree of the genus Citrus.
+```html
+<h1 id="setext">A setext style header</h1>
+<h3 id="hash">A hash style header</h3>
 ```
-
-[Definition List]: ./definition_lists.md
 
 !!! seealso "See Also"
-
     By default, the [Fenced Code Blocks](./fenced_code_blocks.md#attributes) extension includes limited support for
     attribute lists. To get [full support](./fenced_code_blocks.md#keyvalue-pairs), both extensions must be enabled.
 
@@ -138,11 +112,14 @@ Orange { #orange }
 To define attributes on inline elements, the attribute list should be defined
 immediately after the inline element with no white space.
 
-``` md-render
----
-extensions: [attr_list]
----
-[link](http://example.com){ class="foo bar" title="Some title!" }
+```text
+[link](http://example.com){: class="foo bar" title="Some title!" }
+```
+
+The above results in the following output:
+
+```html
+<p><a href="http://example.com" class="foo bar" title="Some title!">link</a></p>
 ```
 
 If the [tables](./tables.md) extension is enabled, attribute lists can be defined on table cells. To differentiate
@@ -150,13 +127,29 @@ attributes for an inline element from attributes for the containing cell, the at
 the content by at least one space and be defined at the end of the cell content. As table cells can only ever be on
 a single line, the attribute list must remain on the same line as the content of the cell.
 
-``` md-render
----
-extensions: [tables, attr_list]
----
+```text
 | set on td    | set on em   |
 |--------------|-------------|
 | *a* { .foo } | *b*{ .foo } |
+```
+
+The above example results in the following output:
+
+```html
+<table>
+  <thead>
+    <tr>
+      <th>set on td</th>
+      <th>set on em</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="foo"><em>a</em></td>
+      <td><em class="foo">b</em></td>
+    </tr>
+  </tbody>
+</table>
 ```
 
 Note that in the first column, the attribute list is preceded by a space; therefore, it is assigned to the table cell

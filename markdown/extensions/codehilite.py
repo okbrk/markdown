@@ -6,7 +6,7 @@
 # See https://Python-Markdown.github.io/extensions/code_hilite
 # for documentation.
 
-# Original code Copyright 2006-2008 [Waylan Limberg](https://github.com/waylan).
+# Original code Copyright 2006-2008 [Waylan Limberg](http://achinghead.com/).
 
 # All changes Copyright 2008-2014 The Python Markdown Project
 
@@ -335,15 +335,7 @@ class CodeHiliteExtension(Extension):
                 self.config[key] = [value, '']
 
     def extendMarkdown(self, md):
-        """
-        Register the processor.
-
-        | Class Instance                                                              | Registry                                                         | Name   | Priority |
-        | --------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------ | :------: |
-        | [`HiliteTreeprocessor`][markdown.extensions.codehilite.HiliteTreeprocessor] | [`treeprocessors`][markdown.treeprocessors.build_treeprocessors] | `hilite` | `30` |
-
-        """
-        # flake8: noqa: E501 341-343
+        """ Add `HilitePostprocessor` to Markdown instance. """
         hiliter = HiliteTreeprocessor(md)
         hiliter.config = self.getConfigs()
         md.treeprocessors.register(hiliter, 'hilite', 30)

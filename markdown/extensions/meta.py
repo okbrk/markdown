@@ -6,7 +6,7 @@
 # See https://Python-Markdown.github.io/extensions/meta_data
 # for documentation.
 
-# Original code Copyright 2007-2008 [Waylan Limberg](https://github.com/waylan).
+# Original code Copyright 2007-2008 [Waylan Limberg](http://achinghead.com).
 
 # All changes Copyright 2008-2014 The Python Markdown Project
 
@@ -40,14 +40,7 @@ class MetaExtension (Extension):
     """ Meta-Data extension for Python-Markdown. """
 
     def extendMarkdown(self, md):
-        """ Register the processor.
-
-        | Class Instance                                                  | Registry                                                      | Name   | Priority |
-        | --------------------------------------------------------------- | ------------------------------------------------------------- | ------ | :------: |
-        | [`MetaPreprocessor`][markdown.extensions.meta.MetaPreprocessor] | [`preprocessors`][markdown.preprocessors.build_preprocessors] | `meta` | `27` |
-
-        """
-        # flake8: noqa: E501 45-47
+        """ Add `MetaPreprocessor` to Markdown instance. """
         md.registerExtension(self)
         self.md = md
         md.preprocessors.register(MetaPreprocessor(md), 'meta', 27)

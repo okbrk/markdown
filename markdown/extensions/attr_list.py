@@ -8,7 +8,7 @@
 # See https://Python-Markdown.github.io/extensions/attr_list
 # for documentation.
 
-# Original code Copyright 2011 [Waylan Limberg](https://github.com/waylan).
+# Original code Copyright 2011 [Waylan Limberg](http://achinghead.com/).
 
 # All changes Copyright 2011-2014 The Python Markdown Project
 
@@ -196,15 +196,6 @@ class AttrListTreeprocessor(Treeprocessor):
 class AttrListExtension(Extension):
     """ Attribute List extension for Python-Markdown """
     def extendMarkdown(self, md):
-        """
-        Register the processor.
-
-        | Class Instance                                                              | Registry                                                         | Name   | Priority |
-        | --------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------ | :------: |
-        | [`AttrListTreeprocessor`][markdown.extensions.attr_list.AttrListTreeprocessor] | [`treeprocessors`][markdown.treeprocessors.build_treeprocessors] | `attr_list` | `8` |
-
-        """
-        # flake8: noqa: E501 202-204
         md.treeprocessors.register(AttrListTreeprocessor(md), 'attr_list', 8)
         md.registerExtension(self)
 

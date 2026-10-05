@@ -6,7 +6,6 @@ Altmayer
 API
 Artem
 aspell
-Astropy
 Babelmark
 backtick
 backticks
@@ -55,7 +54,6 @@ implementers
 InlineProcessor
 Jiryu
 JSON
-JustHTML
 keepachangelog
 Kjell
 Krech
@@ -80,7 +78,6 @@ namespace
 NanoDOM
 Neale
 nosetests
-noqa
 OrderedDict
 OrderedDicts
 OSX
@@ -95,7 +92,6 @@ prepended
 preprocessor
 preprocessors
 Pygments
-PyMdown
 PyPI
 PyPy
 PYTHONPATH
@@ -115,7 +111,6 @@ rST
 ryneeverett
 sanitizer
 sanitizers
-sanitization
 Sauder
 schemeless
 setuptools
@@ -140,7 +135,6 @@ svn
 Swartz
 Szakmeister
 Takhteyev
-templating
 Tiago
 toc
 tokenized
@@ -159,7 +153,6 @@ unescaping
 unittest
 unordered
 unsanitized
-unterminated
 untrusted
 UTF
 uTidylib
@@ -175,7 +168,6 @@ workflow
 Xanthakis
 XHTML
 xhtml
-XSS
 YAML
 Yunusov
 inline
@@ -207,4 +199,3 @@ Serafim
 overridable
 unescaped
 APIs
-setext

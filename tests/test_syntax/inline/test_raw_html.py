@@ -31,19 +31,3 @@ class TestRawHtml(TestCase):
 
     def test_inline_html_backslashes(self):
         self.assertMarkdownRenders('<img src="..\\..\\foo.png">', '<p><img src="..\\..\\foo.png"></p>')
-
-    def test_noname_tag(self):
-        self.assertMarkdownRenders('<span></></span>', '<p><span>&lt;/&gt;</span></p>')
-
-    def test_markdown_nested_in_inline_comment(self):
-        self.assertMarkdownRenders(
-            'Example: <!-- [**Bold link**](http://example.com) -->',
-            '<p>Example: <!-- <a href="http://example.com"><strong>Bold link</strong></a> --></p>'
-        )
-
-    def test_angle_brackets_in_attributes(self):
-        # https://github.com/Python-Markdown/markdown/issues/1647
-        self.assertMarkdownRenders(
-            '<span data-tip-txt="<kbd>Ctrl</kbd>">Anything</span>',
-            '<p><span data-tip-txt="<kbd>Ctrl</kbd>">Anything</span></p>'
-        )

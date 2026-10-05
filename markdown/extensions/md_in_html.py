@@ -41,6 +41,8 @@ class HTMLExtractorExtra(HTMLExtractor):
     """
 
     def __init__(self, md: Markdown, *args, **kwargs):
+        # All block-level tags.
+        self.block_level_tags = set(md.block_level_elements.copy())
         # Block-level tags in which the content only gets span level parsing
         self.span_tags = set(
             ['address', 'dd', 'dt', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'legend', 'li', 'p', 'summary', 'td', 'th']
@@ -50,19 +52,9 @@ class HTMLExtractorExtra(HTMLExtractor):
 
         super().__init__(md, *args, **kwargs)
 
-    @property
-    def block_level_tags(self) -> set[str]:
-        # Read from the Markdown instance so tags registered after the
-        # extension is loaded (md.block_level_elements.append) are honored.
-        return set(self.md.block_level_elements)
-
-    @property
-    def block_tags(self) -> set[str]:
-        return set(self.block_level_tags) - (self.span_tags | self.raw_tags | self.empty_tags)
-
-    @property
-    def span_and_blocks_tags(self) -> set[str]:
-        return self.block_tags | self.span_tags
+        # Block-level tags in which the content gets parsed as blocks
+        self.block_tags = set(self.block_level_tags) - (self.span_tags | self.raw_tags | self.empty_tags)
+        self.span_and_blocks_tags = self.block_tags | self.span_tags
 
     def reset(self):
         """Reset this instance.  Loses all unprocessed data."""
@@ -288,14 +280,6 @@ class HTMLExtractorExtra(HTMLExtractor):
 
     def parse_html_declaration(self, i: int) -> int:
         if self.at_line_start() or self.intail or self.mdstack:
-            if self.rawdata[i:i+3] == '<![' and not self.rawdata[i:i+9] == '<![CDATA[':
-                # We have encountered the bug in #1534 (Python bug `gh-77057`).
-                # Provide an override until we drop support for Python < 3.13.
-                result = self.parse_bogus_comment(i)
-                if result == -1:
-                    self.handle_data(self.rawdata[i:i + 1])
-                    return i + 1
-                return result
             # The same override exists in `HTMLExtractor` without the check
             # for `mdstack`. Therefore, use parent of `HTMLExtractor` instead.
             return super(HTMLExtractor, self).parse_html_declaration(i)
@@ -432,16 +416,8 @@ class MarkdownInHtmlExtension(Extension):
     """Add Markdown parsing in HTML to Markdown class."""
 
     def extendMarkdown(self, md):
-        """ Register the processors.
+        """ Register extension instances. """
 
-        | Class Instance                                                              | Registry                                                         | Name   | Priority |
-        | --------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------ | :------: |
-        | [`HtmlBlockPreprocessor`][markdown.extensions.md_in_html.HtmlBlockPreprocessor] | [`preprocessors`][markdown.preprocessors.build_preprocessors] | `html_block` | `20` |
-        | [`MarkdownInHtmlProcessor`][markdown.extensions.md_in_html.MarkdownInHtmlProcessor] | [`blockprocessors`][markdown.blockprocessors.build_block_parser] | `markdown_block` | `105` |
-        | [`MarkdownInHTMLPostprocessor`][markdown.extensions.md_in_html.MarkdownInHTMLPostprocessor] | [`postprocessors`][markdown.postprocessors.build_postprocessors] | `raw_html` | `30` |
-
-        """
-        # flake8: noqa: E501 429-433
         # Replace raw HTML preprocessor
         md.preprocessors.register(HtmlBlockPreprocessor(md), 'html_block', 20)
         # Add `blockprocessor` which handles the placeholders for `etree` elements

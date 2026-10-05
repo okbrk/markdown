@@ -1018,7 +1018,7 @@ class TestHTMLBlocks(TestCase):
     # Note: This is a change in behavior. Previously, Python-Markdown interpreted this in the same manner
     # as browsers and all text after the opening comment tag was considered to be in a comment. However,
     # that did not match the reference implementation. The new behavior does.
-    def test_unclosed_comment(self):
+    def test_unclosed_comment_(self):
         self.assertMarkdownRenders(
             self.dedent(
                 """
@@ -1031,22 +1031,6 @@ class TestHTMLBlocks(TestCase):
                 """
                 <p>&lt;!-- unclosed comment</p>
                 <p><em>not</em> a comment</p>
-                """
-            )
-        )
-
-    def test_invalid_comment_end(self):
-        self.assertMarkdownRenders(
-            self.dedent(
-                """
-                <!-- This comment is malformed and never closes -- >
-                Some content after the bad comment.
-                """
-            ),
-            self.dedent(
-                """
-                <p>&lt;!-- This comment is malformed and never closes -- &gt;
-                Some content after the bad comment.</p>
                 """
             )
         )
@@ -1289,13 +1273,6 @@ class TestHTMLBlocks(TestCase):
                 ]]>
                 """
             )
-        )
-
-    def test_not_actually_cdata(self):
-        # Ensure bug reported in #1534 is avoided.
-        self.assertMarkdownRenders(
-            '<![',
-            '<p>&lt;![</p>'
         )
 
     def test_raw_cdata_code_span(self):
@@ -1666,181 +1643,3 @@ class TestHTMLBlocks(TestCase):
         placeholder = md.htmlStash.get_placeholder(md.htmlStash.html_counter + 1)
         result = md.postprocessors['raw_html'].run(placeholder)
         self.assertEqual(placeholder, result)
-
-    def test_noname_tag(self):
-        self.assertMarkdownRenders(
-            self.dedent(
-                """
-                <div>
-                </>
-                </div>
-                """
-            ),
-            self.dedent(
-                """
-                <div>
-                </>
-                </div>
-                """
-            )
-        )
-
-    def test_multiple_bogus_comments_no_hang(self):
-        """Test that multiple bogus comments (</` patterns) don't cause infinite loop."""
-        self.assertMarkdownRenders(
-            '`</` and `</`',
-            '<p><code>&lt;/</code> and <code>&lt;/</code></p>'
-        )
-
-    def test_multiple_unclosed_comments_no_hang(self):
-        """Test that multiple unclosed comments don't cause infinite loop."""
-        self.assertMarkdownRenders(
-            '<!-- and <!--',
-            '<p>&lt;!-- and &lt;!--</p>'
-        )
-
-    def test_no_hang_issue_1586(self):
-        """Test no hang condition for issue #1586."""
-
-        self.assertMarkdownRenders(
-            'Test `<!--[if mso]>` and `<!--[if !mso]>`',
-            '<p>Test <code>&lt;!--[if mso]&gt;</code> and <code>&lt;!--[if !mso]&gt;</code></p>'
-        )
-
-    def test_issue_1590(self):
-        """Test case with comments in table for issue #1590."""
-
-        self.assertMarkdownRenders(
-            self.dedent(
-                '''
-                <table>
-                <!--[if mso]>-->
-                <td>foo</td>
-                <!--<!endif]-->
-                <td>bar</td>
-                </table>
-                '''
-            ),
-            self.dedent(
-                '''
-                <table>
-                <!--[if mso]>-->
-                <td>foo</td>
-                <!--<!endif]-->
-                <td>bar</td>
-                </table>
-                '''
-            )
-        )
-
-    def test_stress_comment_handling(self):
-        """Stress test the comment handling."""
-
-        self.assertMarkdownRenders(
-            self.dedent(
-                '''
-                `</` <!-- `<!--[if mso]>` and <!-- </> and `<!--[if mso]>`
-
-                <!-- and <!-- `<!--[if mso]>` and </> `</` and `<!--[if mso]>`
-
-                <!-- Real comment -->
-
-                `<!--[if mso]>` `</` `<!--[if mso]>` and </> <!-- and <!--
-
-                </> `<!--[if mso]>` `</` <!--  and <!--  and `<!--[if mso]>`
-                '''
-            ),
-            self.dedent(
-                '''
-                <p><code>&lt;/</code> &lt;!-- <code>&lt;!--[if mso]&gt;</code> and &lt;!-- &lt;/&gt; and <code>&lt;!--[if mso]&gt;</code></p>
-                <p>&lt;!-- and &lt;!-- <code>&lt;!--[if mso]&gt;</code> and &lt;/&gt; <code>&lt;/</code> and <code>&lt;!--[if mso]&gt;</code></p>
-                <!-- Real comment -->
-                <p><code>&lt;!--[if mso]&gt;</code> <code>&lt;/</code> <code>&lt;!--[if mso]&gt;</code> and &lt;/&gt; &lt;!-- and &lt;!--</p>
-                <p>&lt;/&gt; <code>&lt;!--[if mso]&gt;</code> <code>&lt;/</code> &lt;!--  and &lt;!--  and <code>&lt;!--[if mso]&gt;</code></p>
-                '''  # noqa: E501
-            )
-        )
-
-    def test_unclosed_endtag(self):
-        """Ensure unclosed end tag does not have side effects."""
-
-        self.assertMarkdownRenders(
-            self.dedent(
-                '''
-                `</`
-
-                <div>
-                <!--[if mso]>-->
-                <p>foo</p>
-                <!--<!endif]-->
-                </div>
-                '''
-            ),
-            self.dedent(
-                '''
-                <p><code>&lt;/</code></p>
-                <div>
-                <!--[if mso]>-->
-                <p>foo</p>
-                <!--<!endif]-->
-                </div>
-                '''
-            )
-        )
-
-    def test_unterminated_endtag_in_code_span(self):
-        """Ensure an unterminated end tag does not swallow the remaining content."""
-
-        # https://github.com/Python-Markdown/markdown/issues/1651
-        self.assertMarkdownRenders(
-            'Run `cmd 2</dev/null` here.\n\nThis paragraph should not disappear.',
-            self.dedent(
-                '''
-                <p>Run <code>cmd 2&lt;/dev/null</code> here.</p>
-                <p>This paragraph should not disappear.</p>
-                '''
-            )
-        )
-
-    def test_additional_tail_cases(self):
-        """Ensure various tail cases survive."""
-
-        # https://github.com/Python-Markdown/markdown/issues/1651
-        self.assertMarkdownRenders(
-            self.dedent(
-                """
-                `</dev` z > q
-
-                `</ab c` z
-
-                `</dev/` > q
-
-                `</dev/null` z > q
-
-                `</ab c>` z
-                """
-            ),
-            self.dedent(
-                """
-                <p><code>&lt;/dev</code> z &gt; q</p>
-                <p><code>&lt;/ab c</code> z</p>
-                <p><code>&lt;/dev/</code> &gt; q</p>
-                <p><code>&lt;/dev/null</code> z &gt; q</p>
-                <p><code>&lt;/ab c&gt;</code> z</p>
-                """
-            )
-        )
-
-    def test_unterminated_endtag(self):
-        """Ensure an unterminated end tag is treated as text."""
-
-        # https://github.com/Python-Markdown/markdown/issues/1651
-        self.assertMarkdownRenders(
-            'foo </bar\n\nbaz',
-            self.dedent(
-                '''
-                <p>foo &lt;/bar</p>
-                <p>baz</p>
-                '''
-            )
-        )

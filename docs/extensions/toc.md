@@ -1,6 +1,4 @@
----
 title: Table of Contents Extension
----
 
 Table of Contents
 =================
@@ -13,19 +11,6 @@ document and adds it into the resulting HTML document.
 
 This extension is included in the standard Markdown library.
 
-!!! info "Note"
-
-    This extension is in __maintenance mode__.  We will continue to fix bugs
-    and keep it up-to-date with the core parser, but no new features or
-    changes in behavior will be made. If you need a feature that this
-    extension does not offer, then you have three options (1) find an
-    existing [third-party extension] which meets your needs, (2) [build your
-    own extension], or (3) fork this extension (pursuant to its licensing
-    requirements) and maintain it as a third-party extension.
-
-[third-party extension]: index.md#third-party-extensions
-[build your own extension]: api.md
-
 Syntax
 ------
 
@@ -33,28 +18,47 @@ By default, all headers will automatically have unique `id` attributes
 generated based upon the text of the header. Note this example, in which all
 three headers would have the same `id`:
 
-``` md-render
----
-extensions: [toc]
----
+```md
 #Header
 #Header
 #Header
 ```
 
+Results in:
+
+```html
+<h1 id="header">Header</h1>
+<h1 id="header_1">Header</h1>
+<h1 id="header_2">Header</h1>
+```
+
 Place a marker in the document where you would like the Table of Contents to
 appear. Then, a nested list of all the headers in the document will replace the
-marker. The marker defaults to `[TOC]`.
+marker. The marker defaults to `[TOC]` so the following document:
 
-``` md-render
----
-extensions: [toc]
----
+```md
 [TOC]
 
 # Header 1
 
 ## Header 2
+```
+
+would generate the following output:
+
+```html
+<div class="toc">
+  <ul>
+    <li>
+      <a href="#header-1">Header 1</a>
+      <ul>
+        <li><a href="#header-2">Header 2</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<h1 id="header-1">Header 1</h1>
+<h2 id="header-2">Header 2</h2>
 ```
 
 Regardless of whether a `marker` is found in the document (or disabled), the
@@ -103,19 +107,32 @@ the header. However, occasionally that is not desirable. In that case, if this
 extension is used in conjunction with the [Attribute Lists Extension] and a
 `data-toc-label` attribute is defined on the header, then the contents of that
 attribute will be used as the text label for the item in the Table of Contents.
-For example:
+For example, the following Markdown:
 
 [Attribute Lists Extension]: attr_list.md
 
-``` md-render
----
-extensions: [toc, attr_list]
----
+```md
 [TOC]
 
 # Functions
 
 ## `markdown.markdown(text [, **kwargs])` { #markdown data-toc-label='markdown.markdown' }
+```
+would generate the following output:
+
+```html
+<div class="toc">
+  <ul>
+    <li>
+      <a href="#functions">Functions</a>
+      <ul>
+        <li><a href="#markdown">markdown.markdown</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<h1 id="functions">Functions</h1>
+<h2 id="markdown"><code>markdown.markdown(text [, **kwargs])</code></h2>
 ```
 
 Notice that the text in the Table of Contents is much cleaner and easier to read
@@ -135,7 +152,7 @@ Usage
 See [Extensions](index.md) for general extension usage. Use `toc` as the name
 of the extension.
 
-See the [Library Reference](../library.md#extensions) for information about
+See the [Library Reference](../reference.md#extensions) for information about
 configuring extensions.
 
 The following options are provided to configure the output:
@@ -192,16 +209,15 @@ The following options are provided to configure the output:
     suppose the Markdown text for a page should not contain any headers higher
     than level 3 (`<h3>`). The following will accomplish that:
 
-    ``` pycon
-    >>>  text = '''
-    ... #Some Header
-    ... ## Next Level'''
-    >>> from markdown.extensions.toc import TocExtension
-    >>> html = markdown.markdown(text, extensions=[TocExtension(baselevel=3)])
-    >>> print html
-    <h3 id="some_header">Some Header</h3>
-    <h4 id="next_level">Next Level</h4>'
-    ```
+        :::pycon
+        >>>  text = '''
+        ... #Some Header
+        ... ## Next Level'''
+        >>> from markdown.extensions.toc import TocExtension
+        >>> html = markdown.markdown(text, extensions=[TocExtension(baselevel=3)])
+        >>> print html
+        <h3 id="some_header">Some Header</h3>
+        <h4 id="next_level">Next Level</h4>'
 
 * **`slugify`**:
     Callable to generate anchors.

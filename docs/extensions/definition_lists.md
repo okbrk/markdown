@@ -1,6 +1,4 @@
----
 title: Definition Lists Extension
----
 
 Definition Lists
 ================
@@ -13,22 +11,6 @@ Markdown documents.
 
 This extension is included in the standard Markdown library.
 
-!!! info "Note"
-
-    This extension is in __maintenance mode__.  We will continue to fix bugs
-    and keep it up-to-date with the core parser, but no new features or
-    changes in behavior will be made. If you need a feature that this
-    extension does not offer, then you have three options (1) find an
-    existing [third-party extension] which meets your needs, (2) [build your
-    own extension], or (3) fork this extension (pursuant to its licensing
-    requirements) and maintain it as a third-party extension.
-
-    We recommend [PyMdown Definition] as an actively developed alternative. 
-
-[third-party extension]: index.md#third-party-extensions
-[build your own extension]: api.md
-[PyMdown Definition]: https://facelessuser.github.io/pymdown-extensions/extensions/blocks/plugins/definition/
-
 Syntax
 ------
 
@@ -37,18 +19,28 @@ Definition lists are defined using the syntax established in
 
 [php]: http://www.michelf.com/projects/php-markdown/extra/#def-list
 
-Consider the following text taken from the above referenced PHP documentation.
+Thus, the following text (taken from the above referenced PHP documentation):
 
-``` md-render
----
-extensions: [def_list]
----
+```md
 Apple
 :   Pomaceous fruit of plants of the genus Malus in
     the family Rosaceae.
 
 Orange
 :   The fruit of an evergreen tree of the genus Citrus.
+```
+
+will be rendered as:
+
+```html
+<dl>
+<dt>Apple</dt>
+<dd>Pomaceous fruit of plants of the genus Malus in
+the family Rosaceae.</dd>
+
+<dt>Orange</dt>
+<dd>The fruit of an evergreen tree of the genus Citrus.</dd>
+</dl>
 ```
 
 Usage

@@ -6,7 +6,7 @@
 # See https://Python-Markdown.github.io/extensions/abbreviations
 # for documentation.
 
-# Original code Copyright 2007-2008 [Waylan Limberg](https://github.com/waylan)
+# Original code Copyright 2007-2008 [Waylan Limberg](http://achinghead.com/)
 # and [Seemant Kulleen](http://www.kulleen.org/)
 
 # All changes Copyright 2008-2014 The Python Markdown Project
@@ -69,16 +69,7 @@ class AbbrExtension(Extension):
             self.glossary = {**dictionary, **self.glossary}
 
     def extendMarkdown(self, md):
-        """
-        Register the processors.
-
-        | Class Instance                                                      | Registry                                                         | Name   | Priority |
-        | ------------------------------------------------------------------- | ---------------------------------------------------------------- | ------ | :------: |
-        | [`AbbrTreeprocessor`][markdown.extensions.abbr.AbbrTreeprocessor]   | [`treeprocessors`][markdown.treeprocessors.build_treeprocessors] | `abbr` | `7`      |
-        | [`AbbrBlockprocessor`][markdown.extensions.abbr.AbbrBlockprocessor] | [`blockprocessors`][markdown.blockprocessors.build_block_parser] | `abbr` | `16`     |
-
-        """
-        # flake8: noqa: E501 75-78
+        """ Insert `AbbrTreeprocessor` and `AbbrBlockprocessor`. """
         if (self.config['glossary'][0]):
             self.load_glossary(self.config['glossary'][0])
         self.abbrs.update(self.glossary)
@@ -162,7 +153,7 @@ class AbbrBlockprocessor(BlockProcessor):
             title = m.group('title').strip()
             if title and abbr:
                 if title == "''" or title == '""':
-                    self.abbrs.pop(abbr, None)
+                    self.abbrs.pop(abbr)
                 else:
                     self.abbrs[abbr] = title
                 if block[m.end():].strip():

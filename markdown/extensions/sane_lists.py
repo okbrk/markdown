@@ -6,7 +6,7 @@
 # See https://Python-Markdown.github.io/extensions/sane_lists
 # for documentation.
 
-# Original code Copyright 2011 [Waylan Limberg](https://github.com/waylan)
+# Original code Copyright 2011 [Waylan Limberg](http://achinghead.com)
 
 # All changes Copyright 2011-2014 The Python Markdown Project
 
@@ -60,15 +60,7 @@ class SaneListExtension(Extension):
     """ Add sane lists to Markdown. """
 
     def extendMarkdown(self, md):
-        """ Register the processors.
-
-        | Class Instance                                                            | Registry                                                         | Name   | Priority |
-        | ------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------ | :------: |
-        | [`SaneOListProcessor`][markdown.extensions.sane_lists.SaneOListProcessor] | [`blockprocessors`][markdown.blockprocessors.build_block_parser] | `olist` | `40` |
-        | [`SaneUListProcessor`][markdown.extensions.sane_lists.SaneUListProcessor] | [`blockprocessors`][markdown.blockprocessors.build_block_parser] | `ulist` | `30` |
-
-        """
-        # flake8: noqa: E501 65-68
+        """ Override existing Processors. """
         md.parser.blockprocessors.register(SaneOListProcessor(md.parser), 'olist', 40)
         md.parser.blockprocessors.register(SaneUListProcessor(md.parser), 'ulist', 30)
 

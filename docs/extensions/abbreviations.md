@@ -1,6 +1,4 @@
----
 title: Abbreviations Extension
----
 
 Abbreviations
 =============
@@ -13,19 +11,6 @@ Specifically, any defined abbreviation is wrapped in  an `<abbr>` tag.
 
 The Abbreviations extension is included in the standard Markdown library.
 
-!!! info "Note"
-
-    This extension is in __maintenance mode__.  We will continue to fix bugs
-    and keep it up-to-date with the core parser, but no new features or
-    changes in behavior will be made. If you need a feature that this
-    extension does not offer, then you have three options (1) find an
-    existing [third-party extension] which meets your needs, (2) [build your
-    own extension], or (3) fork this extension (pursuant to its licensing
-    requirements) and maintain it as a third-party extension.
-
-[third-party extension]: index.md#third-party-extensions
-[build your own extension]: api.md
-
 Syntax
 ------
 
@@ -34,17 +19,21 @@ Abbreviations are defined using the syntax established in
 
 [php]: http://www.michelf.com/projects/php-markdown/extra/#abbr
 
-For example, consider the following text (taken from the above referenced PHP documentation).
+Thus, the following text (taken from the above referenced PHP documentation):
 
-``` md-render
----
-extensions: [abbr]
----
+```md
 The HTML specification
 is maintained by the W3C.
 
 *[HTML]: Hyper Text Markup Language
 *[W3C]:  World Wide Web Consortium
+```
+
+will be rendered as:
+
+```html
+<p>The <abbr title="Hyper Text Markup Language">HTML</abbr> specification
+is maintained by the <abbr title="World Wide Web Consortium">W3C</abbr>.</p>
 ```
 
 The backslash (`\`) is not permitted in an abbreviation. Any abbreviation
@@ -74,14 +63,7 @@ Disabling Abbreviations
 When using the `glossary` option, there may be times when you need to turn off
 a specific abbreviation. To do this, set the abbreviation to `''` or `""`.
 
-``` md-render
----
-extensions: [abbr]
-extension_configs:
-    abbr:
-        glossary:
-            HTML: Hyper Text Markup Language
----
+```md
 The HTML abbreviation is disabled on this page.
 
 *[HTML]: ''

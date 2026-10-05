@@ -101,7 +101,7 @@ def build_inlinepatterns(md: Markdown, **kwargs: Any) -> util.Registry[InlinePro
 NOIMG = r'(?<!\!)'
 """ Match not an image. Partial regular expression which matches if not preceded by `!`. """
 
-BACKTICK_RE = r'(?:(?<!\\)((?:\\{2})+)(?=`+)|(?<!\\)`)'
+BACKTICK_RE = r'(?:(?<!\\)((?:\\{2})+)(?=`+)|(?<!\\)(`+)(.+?)(?<!`)\2(?!`))'
 """ Match backtick quoted string (`` `e=f()` `` or ``` ``e=f("`")`` ```). """
 
 ESCAPE_RE = r'\\(.)'
@@ -159,14 +159,10 @@ AUTOMAIL_RE = r'<([^<> !]+@[^@<> ]+)>'
 """ Match an automatic email link (`<me@example.com>`). """
 
 HTML_RE = (
-    # Tag
-    r'''(<(\/?+[a-zA-Z][^\s"'<>@]*+(?:\s+[^\s"'=<>]++(?:\s*+=\s*+(?:"[^"]*+"|'[^']*+'|[^\s"'=<>]++))?+)*+\s*+/?|'''
-    # Comment
-    r'!--(?:(?!<!--|-->).)*--|'
-    # Processing instruction
-    r'[?](?:(?!<[?]|[?]>).)*[?]|'
-    # `CDATA`
-    r'!\[CDATA\[(?:(?!<!\[CDATA\[|\]\]>).)*\]\]'
+    r'(<(\/?[a-zA-Z][^<>@ ]*( [^<>]*)?|'          # Tag
+    r'!--(?:(?!<!--|-->).)*--|'                   # Comment
+    r'[?](?:(?!<[?]|[?]>).)*[?]|'                 # Processing instruction
+    r'!\[CDATA\[(?:(?!<!\[CDATA\[|\]\]>).)*\]\]'  # `CDATA`
     ')>)'
 )
 """ Match an HTML tag (`<...>`). """
@@ -439,79 +435,27 @@ class SubstituteTagInlineProcessor(SimpleTagInlineProcessor):
 
 class BacktickInlineProcessor(InlineProcessor):
     """ Return a `<code>` element containing the escaped matching text. """
-
     def __init__(self, pattern: str):
         InlineProcessor.__init__(self, pattern)
         self.ESCAPED_BSLASH = '{}{}{}'.format(util.STX, ord('\\'), util.ETX)
         self.tag = 'code'
         """ The tag of the rendered element. """
 
-    def find_code_spans(self, start: int, text: str) -> tuple[int, int] | None:
-        """Find code spans."""
-
-        last = len(text)
-
-        # Get the maximum starting ticks
-        max_ticks = 0
-        while start < last and text[start] == '`':
-            max_ticks += 1
-            start += 1
-
-        if not max_ticks:  # pragma: no cover
-            # This is not ever expected to happen.
-            return None
-
-        longest_span = 0
-        end = 0
-
-        # Find an ending span of backticks that matches our opening
-        i = start
-        while i < last:
-            span_length = 0
-            while i < last and text[i] == '`':
-                span_length += 1
-                i += 1
-            if not span_length:
-                i += 1
-                continue
-
-            # Did we find the end?
-            if max_ticks == span_length:
-                return start, i - span_length
-
-            # Track the longest span of backticks we find as a fallback.
-            if span_length > longest_span:
-                longest_span = span_length
-                end = i
-
-        # Since we didn't find an exact matching start and end,
-        # adjust start to match the largest end we could calculate.
-        if longest_span:
-            return start - (max_ticks - longest_span), end - longest_span
-
-        # We could not find a suitable pairing
-        return None
-
-    def handleMatch(self, m: re.Match[str], data: str) -> tuple[etree.Element | str | None, int | None, int | None]:
+    def handleMatch(self, m: re.Match[str], data: str) -> tuple[etree.Element | str, int, int]:
         """
         If the match contains `group(3)` of a pattern, then return a `code`
         [`Element`][xml.etree.ElementTree.Element] which contains HTML escaped text (with
         [`code_escape`][markdown.util.code_escape]) as an [`AtomicString`][markdown.util.AtomicString].
 
-        If the match contains `group(1)` then return the text of `group(1)` as backslash escaped.
+        If the match does not contain `group(3)` then return the text of `group(1)` backslash escaped.
 
         """
-        if m.group(1):
-            return m.group(1).replace('\\\\', self.ESCAPED_BSLASH), m.start(0), m.end(0)
-
-        begin = m.start(0)
-        result = self.find_code_spans(begin, data)
-        if result is not None:
-            start, end = result
+        if m.group(3):
             el = etree.Element(self.tag)
-            el.text = util.AtomicString(util.code_escape(data[start:end].strip()))
-            return el, begin, result[1] + (start - begin)
-        return None, None, None
+            el.text = util.AtomicString(util.code_escape(m.group(3).strip()))
+            return el, m.start(0), m.end(0)
+        else:
+            return m.group(1).replace('\\\\', self.ESCAPED_BSLASH), m.start(0), m.end(0)
 
 
 class DoubleTagPattern(SimpleTagPattern):  # pragma: no cover
@@ -575,10 +519,9 @@ class HtmlInlineProcessor(InlineProcessor):
             id = m.group(1)
             value = stash.get(id)
             if value is not None:
-                if isinstance(value, etree.Element):
-                    # Ensure we don't have a placeholder inside a placeholder
-                    return self.unescape(self.md.serializer(value))
-                else:
+                try:
+                    return self.md.serializer(value)
+                except Exception:
                     return r'\%s' % value
 
         return util.INLINE_PLACEHOLDER_RE.sub(get_stash, text)

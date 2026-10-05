@@ -103,7 +103,10 @@ RTL_BIDI_RANGES = (
 @lru_cache(maxsize=None)
 def get_installed_extensions():
     """ Return all entry_points in the `markdown.extensions` group. """
-    from importlib import metadata
+    if sys.version_info >= (3, 10):
+        from importlib import metadata
+    else:  # `<PY310` use backport
+        import importlib_metadata as metadata
     # Only load extension entry_points once.
     return metadata.entry_points(group='markdown.extensions')
 
@@ -373,10 +376,6 @@ class Registry(Generic[_T]):
         old item is lost with no way to recover it. The new item will be
         sorted according to its priority and will **not** retain the position
         of the old item.
-
-        Items assigned a higher number are given a higher priority. In other
-        words, items assigned a higher number are sorted to be before those
-        assigned a lower number.
         """
         if name in self:
             # Remove existing item of same name first

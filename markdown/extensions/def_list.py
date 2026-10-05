@@ -6,7 +6,7 @@
 # See https://Python-Markdown.github.io/extensions/definition_lists
 # for documentation.
 
-# Original code Copyright 2008 [Waylan Limberg](https://github.com/waylan)
+# Original code Copyright 2008 [Waylan Limberg](http://achinghead.com)
 
 # All changes Copyright 2008-2014 The Python Markdown Project
 
@@ -110,16 +110,7 @@ class DefListExtension(Extension):
     """ Add definition lists to Markdown. """
 
     def extendMarkdown(self, md):
-        """
-        Register the processors.
-
-        | Class Instance                                                              | Registry                                                         | Name   | Priority |
-        | --------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------ | :------: |
-        | [`DefListIndentProcessor`][markdown.extensions.def_list.DefListIndentProcessor] | [`blockprocessors`][markdown.blockprocessors.build_block_parser] | `defindent` | `85` |
-        | [`DefListProcessor`][markdown.extensions.def_list.DefListProcessor] | [`blockprocessors`][markdown.blockprocessors.build_block_parser] | `deflist` | `25` |
-
-        """
-        # flake8: noqa: E501 116-119
+        """ Add an instance of `DefListProcessor` to `BlockParser`. """
         md.parser.blockprocessors.register(DefListIndentProcessor(md.parser), 'defindent', 85)
         md.parser.blockprocessors.register(DefListProcessor(md.parser), 'deflist', 25)
 
